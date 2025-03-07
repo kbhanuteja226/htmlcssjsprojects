@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(133deg, #4abeb2, #3c57d2);
+        }
+        .container {
+            background: white;
+            width: 450px;
+            padding: 30px;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        #showImg {
+            display: block;
+            margin: 10px auto;
+            max-width: 400px;
+            min-height: 200px;
+            background: #174353;
+            border-radius: 5px;
+        }
+        .button {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        label, button {
+            width: 45%;
+            padding: 10px;
+            font-size: 17px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        label {
+            background: #a74901;
+        }
+        button {
+            background: #023780;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Image to PDF Converter</h2>
+        <img id="showImg" src="" alt="Image Preview">
+        <div class="button">
+            <input type="file" id="fileInput" accept=".png, .jpg, .jpeg" onchange="loadFile(event)">
+            <label for="fileInput">Upload Image</label>
+            <button onclick="pdfDown()">Download as PDF</button>
+        </div>
+    </div>
+
+    <script>
+        var newImage, showImg;
+        
+        function loadFile(event) {
+            showImg = document.getElementById("showImg");
+            showImg.src = URL.createObjectURL(event.target.files[0]);
+
+            newImage = document.createElement("img");
+            newImage.src = URL.createObjectURL(event.target.files[0]);
+
+            showImg.onload = function() {
+                URL.revokeObjectURL(showImg.src); // Free memory
+            };
+        }
+
+        function pdfDown() {
+            if (!newImage) {
+                alert("Please select an image first!");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            var doc = new jsPDF();
+            doc.addImage(newImage, "JPEG", 10, 10, 180, 160);
+            doc.save("ImageToPDF.pdf");
+        }
+    </script>
+</body>
+</html>
